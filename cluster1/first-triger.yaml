@@ -1,9 +1,9 @@
 apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
-  name: first-broker
+  name: first-trigger
 spec:
-  broker: default
+  broker: first-broker
   subscriber:
     ref:
       apiVersion: v1

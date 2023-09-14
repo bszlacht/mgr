@@ -1,0 +1,16 @@
+apiVersion: sources.knative.dev/v1
+kind: ApiServerSource
+metadata:
+ name: first-apiserversource
+ namespace: api-server-source
+spec:
+ serviceAccountName: first-service-account
+ mode: Reference
+ resources:
+   - apiVersion: v1
+     kind: Event
+ sink:
+   ref:
+     apiVersion: v1
+     kind: Service
+     name: event-display
