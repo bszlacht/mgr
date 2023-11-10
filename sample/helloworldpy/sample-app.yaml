@@ -22,7 +22,7 @@ spec: {}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: helloworld-python
+  name: helloworld-quark
   namespace: knative-samples
 spec:
   replicas: 1
