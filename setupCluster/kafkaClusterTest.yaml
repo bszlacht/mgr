@@ -1,22 +1,3 @@
-# LOGER
-
-apiVersion: serving.knative.dev/v1
-kind: Service
-metadata:
-  name: event-display
-  namespace: default
-spec:
-  template:
-    spec:
-      containers:
-        - # This corresponds to
-          # https://github.com/knative/eventing/tree/main/cmd/event_display/main.go
-          image: gcr.io/knative-releases/knative.dev/eventing/cmd/event_display
-
----
-
-# KAFKA
-
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
@@ -30,6 +11,21 @@ spec:
   config:
     retention.ms: 7200000
     segment.bytes: 1073741824
+
+---
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: event-display
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+        - # This corresponds to
+          # https://github.com/knative/eventing/tree/main/cmd/event_display/main.go
+          image: gcr.io/knative-releases/knative.dev/eventing/cmd/event_display
 
 ---
 
@@ -47,29 +43,10 @@ spec:
   sink:
     ref:
       apiVersion: serving.knative.dev/v1
-      kind: Broker
-      name: broker1
+      kind: Service
+      name: event-display
 
 ---
-
-# EVENTING
-
-apiVersion: eventing.knative.dev/v1
-kind: Broker
-metadata:
-  annotations:
-    eventing.knative.dev/broker.class: MTChannelBasedBroker
-  name: broker1
-spec:
-  # Configuration specific to this broker.
-  config:
-    apiVersion: v1
-    kind: ConfigMap
-    name: my-broker-specific-configuration
-    namespace: default
-
----
-
 
 apiVersion: eventing.knative.dev/v1
 kind: Trigger
@@ -83,6 +60,7 @@ spec:
       kind: Service
       name: event-display
 
+# co to kafka sink i kafka source
 # todo jak polaczona jest ta aplikacja? gdzie sie dzieje scaling do zera? jak podbic liczbe replic dla servisu knative
 # sdn - data plane - leca eventy/ controle plane -> routowanie eventow jakies proste, mikro agenciki odpychja/przyciagaja eventy
 
